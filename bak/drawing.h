@@ -15,7 +15,6 @@
 
 cairo_surface_t *cairo_create_x11_surface(int*, int*);
 void cairo_close_x11_surface(cairo_surface_t*);
-
 void draw_statics (cairo_t*, int, int);
 void draw_dynamics (cairo_t*, int, int);
 

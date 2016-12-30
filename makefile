@@ -16,8 +16,8 @@ DEPEXT      := d
 OBJEXT      := o
 
 #Flags, Libraries and Includes
-CFLAGS      = -Wall -g -lm -lpthread $(shell pkg-config --cflags --libs x11 cairo libmodbus)
-LDFLAGS     = -lm -lpthread $(shell pkg-config --libs x11 cairo libmodbus)
+CFLAGS      = -g -Wall -pedantic -std=c11 -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -lm -O2 -lpthread -lrt -D_POSIX_C_SOURCE=200809L $(shell pkg-config --cflags --libs x11 cairo libmodbus)
+LDFLAGS     = -lm -lpthread -lrt $(shell pkg-config --libs x11 cairo libmodbus)
 INC         := -I$(INCDIR) -I$(SRCDIR)
 INCDEP      := -I$(INCDIR) -I$(SRCDIR)
 
@@ -48,10 +48,14 @@ clean:
 
 #Full Clean, Objects and Binaries
 cleaner: clean
-	@$(RM) -rf $(TARGETDIR)
+	@$(RM) -rf $(TARGETDIR)/$(TARGET)
 
 #Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
+
+#Check source files with cppcheck
+check:
+	@cppcheck -I ./$(SRCDIR)/ --enable=all ./$(SRCDIR)/.
 
 #Link
 $(TARGET): $(OBJECTS)
@@ -78,3 +82,10 @@ options:
 	@echo "CFLAGS   = ${CFLAGS}"
 	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CC       = ${CC}"
+	
+clang-format:
+	@clang-format -v -style=file -i ./$(SRCDIR)/*.c
+
+
+
+

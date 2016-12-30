@@ -1,18 +1,17 @@
+#include <drawing.h>
+#include <manometer.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <drawing.h>
 #include <time.h>
-#include <pthread.h>
-#include <manometer.h>
+#include <unistd.h>
 
+void* scanivalve(void* arg)
+{
 
-void *scanivalve(){
+	while (_fCloseThreads == 1) {
 
-while(_fCloseThreads == 1){
-
-	usleep(100000);
-}
-pthread_exit(NULL);
-
+		nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
+	}
+	return NULL;
 }

@@ -15,15 +15,15 @@
 	static const float DIST_FROM_RIGHT  = 0.05;
 	static const float DIST_FROM_MIDDLE = 0.02;
 	static const float ATM_PRESS        = 14.6959;
-	static const char  *FONT_FACE		= "Ubuntu";
+	static const char  *FONT_FACE		= "Lato";
 	static const int   COMP_SCALE_BOT   = 10;
 	static const int   COMP_SCALE_TOP   = 30;
 	static const int   COMP_STEP_SIZE	= 1;
-	static const int	 COMP_STEP_LABEL  = 5;
+	static const int	COMP_STEP_LABEL  = 5;
 	static const int   SECT_SCALE_BOT   = 0;
 	static const int   SECT_SCALE_TOP   = 20;
 	static const int   SECT_STEP_LABEL	= 4;
-	static const int	 SECT_STEP_SIZE   = 1;
+	static const int	SECT_STEP_SIZE   = 1;
 	static const int	COMP_PRES_NUMBER	= 25;
 	static const int	SECT_PRES_NUMBER 	= 39;
 	
@@ -50,15 +50,21 @@ static void fullscreen(Display* dpy, Window win)
 cairo_surface_t *cairo_create_x11_surface(int *x, int *y)
 {
    Display *dsp;
-   Drawable da;
+   Drawable da; //Also the window name
    Screen *scr;
    int screen;
    cairo_surface_t *sfc;
+   XTextProperty window_title_property;
+   char* window_title = "8x6 Manometer";
+   
 
+   
    if ((dsp = XOpenDisplay(NULL)) == NULL)
       exit(1);
+      
    screen = DefaultScreen(dsp);
    scr = DefaultScreenOfDisplay(dsp);
+ 
    if (!*x || !*y)
    {
       *x = WidthOfScreen(scr), *y = HeightOfScreen(scr);
@@ -67,22 +73,31 @@ cairo_surface_t *cairo_create_x11_surface(int *x, int *y)
    }
    else
       da = XCreateSimpleWindow(dsp, DefaultRootWindow(dsp), 0, 0, *x, *y, 0, 0, 0);
+      
    XSelectInput(dsp, da, ButtonPressMask | KeyPressMask);
    XMapWindow(dsp, da);
-   
-    Atom WM_DELETE_WINDOW = XInternAtom(d, "WM_DELETE_WINDOW", False); 
-    XSetWMProtocols(d, w, &WM_DELETE_WINDOW, 1);
-
+  
    sfc = cairo_xlib_surface_create(dsp, da, DefaultVisual(dsp, screen), *x, *y);
    cairo_xlib_surface_set_size(sfc, *x, *y);
+   
+    int rc = XStringListToTextProperty(&window_title, 1, &window_title_property);
+    
+    
+    if (rc == 0) {
+   	fprintf(stderr, "XStringListToTextProperty - out of memory\n");
+    exit(1);
+   }
+	/* assume that window_title_property is our XTextProperty, and is */
+	/* defined to contain the desired window title.     */
+	XSetWMName(dsp, da, &window_title_property);
 
    return sfc;
 }
 
 // Create a random pressure between 14 & 15 PSI for testing
 
-static float randompressure(){
-            float result = 0.0;
+static float randompressure(void){
+            float result;
             result = (14.00 + (rand() % 100)/100.00);
             return result;
 }
@@ -100,7 +115,7 @@ void cairo_close_x11_surface(cairo_surface_t *sfc)
 
 //Load a png to display as a background
 
-int load_image ()
+int load_image (void)
 {
   glob.image = cairo_image_surface_create_from_png("background.png");
   if (cairo_surface_status(glob.image) != CAIRO_STATUS_SUCCESS){
@@ -115,10 +130,9 @@ int load_image ()
 void draw_statics (cairo_t *ctx, int w, int h){
  	
  	int number_of_steps;
+ 	double x_scaling =0, y_scaling =0;
  	int i = 0;
- 	double image_width, image_height;
-   	double x_scaling, y_scaling;
-   	char axis_label[4];
+ 	char axis_label[4];
    	int error = 0;
   
  // Draw the Labels
@@ -129,7 +143,8 @@ void draw_statics (cairo_t *ctx, int w, int h){
 
 	error = load_image();
 	if(error == 0){
- 		image_width = cairo_image_surface_get_width (glob.image);
+		double image_width, image_height;
+		image_width = cairo_image_surface_get_width (glob.image);
   		image_height = cairo_image_surface_get_height (glob.image);
  		x_scaling = w / image_width;
   		y_scaling = h / image_height;
@@ -142,7 +157,7 @@ void draw_statics (cairo_t *ctx, int w, int h){
 		cairo_set_source_rgb(ctx, 0, 0, 0);
 	}
 	cairo_paint(ctx);
-		cairo_scale (ctx, 1/x_scaling, 1/y_scaling);
+	cairo_scale(ctx, 1/x_scaling, 1/y_scaling);
 
 // Draw the section labels
 
@@ -168,12 +183,13 @@ void draw_statics (cairo_t *ctx, int w, int h){
 	cairo_select_font_face (ctx, FONT_FACE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size (ctx, 0.018*w);
 	cairo_text_extents (ctx, "psi", &te);
-	cairo_move_to (ctx, w*(DIST_FROM_LEFT/2) - te.width/2- te.x_bearing, h*(1-DIST_FROM_BOTTOM) + 1.75*te.height);
+	cairo_move_to (ctx, w*(DIST_FROM_LEFT/2) - te.width/2- te.x_bearing, h*(1-DIST_FROM_BOTTOM) + 1.5*te.height);
 	cairo_show_text(ctx, "psi");
 
-	cairo_set_line_width (ctx, 2);
+
 	
 //Draw the ticks	
+	cairo_set_line_width (ctx, 2);
 
 	number_of_steps = (COMP_SCALE_TOP-COMP_SCALE_BOT)/COMP_STEP_SIZE;
 	
@@ -208,7 +224,7 @@ void draw_statics (cairo_t *ctx, int w, int h){
 	cairo_select_font_face (ctx, FONT_FACE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size (ctx, 0.018*w);
 	cairo_text_extents (ctx, "psi", &te);
-	cairo_move_to (ctx, w*(0.5) - te.width/2- te.x_bearing, h*(1-DIST_FROM_BOTTOM) + 1.75*te.height);
+	cairo_move_to (ctx, w*(0.5) - te.width/2- te.x_bearing, h*(1-DIST_FROM_BOTTOM) + 1.5*te.height);
 	cairo_show_text(ctx, "psi");
 
 	cairo_set_line_width (ctx, 2);
@@ -289,11 +305,11 @@ void draw_dynamics (cairo_t *ctx, int w, int h){
 	const float C_BAR_WIDTH = (0.5-DIST_FROM_LEFT-DIST_FROM_MIDDLE)/COMP_PRES_NUMBER; // Width of the compress bar graph bars
 	
 	cairo_set_source_rgb(ctx, 1, 1, 1);
-	cairo_set_line_width(ctx, 2);
-	cairo_move_to(ctx, w*(DIST_FROM_LEFT+C_BAR_WIDTH*6), h*(1-DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, w*(DIST_FROM_LEFT+C_BAR_WIDTH*6), h*0.24);
-	cairo_move_to(ctx, w*(DIST_FROM_LEFT+C_BAR_WIDTH*22), h*(1-DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, w*(DIST_FROM_LEFT+C_BAR_WIDTH*22), h*0.24);
+	cairo_set_line_width(ctx, 1);
+	cairo_move_to(ctx, round(w*(DIST_FROM_LEFT+C_BAR_WIDTH*6)), h*(1-DIST_FROM_BOTTOM));
+	cairo_line_to(ctx, round(w*(DIST_FROM_LEFT+C_BAR_WIDTH*6)), h*0.24);
+	cairo_move_to(ctx, round(w*(DIST_FROM_LEFT+C_BAR_WIDTH*22)), h*(1-DIST_FROM_BOTTOM));
+	cairo_line_to(ctx, round(w*(DIST_FROM_LEFT+C_BAR_WIDTH*22)), h*0.24);
 	cairo_stroke(ctx);
 		
 	for(i=0; i<COMP_PRES_NUMBER; i++){
@@ -314,7 +330,7 @@ void draw_dynamics (cairo_t *ctx, int w, int h){
 	const float S_BAR_WIDTH = (0.5-DIST_FROM_MIDDLE-DIST_FROM_RIGHT)/SECT_PRES_NUMBER;
 	
 	cairo_set_source_rgb(ctx, 1, 1, 1);
-	cairo_set_line_width(ctx, 2);
+	cairo_set_line_width(ctx, 1);
 	cairo_move_to(ctx, w*(0.5+DIST_FROM_MIDDLE+S_BAR_WIDTH*15), h*(1-DIST_FROM_BOTTOM));
 	cairo_line_to(ctx, w*(0.5+DIST_FROM_MIDDLE+S_BAR_WIDTH*15), h*0.17);
 	cairo_move_to(ctx, w*(0.5+DIST_FROM_MIDDLE+S_BAR_WIDTH*21), h*(1-DIST_FROM_BOTTOM));
