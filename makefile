@@ -84,7 +84,7 @@ options:
 	@echo "CC       = ${CC}"
 	
 clang-format:
-	@clang-format -v -style=file -i ./$(SRCDIR)/*.c
+	@clang-format -style=file -i ./$(SRCDIR)/*.c
 
 
 
