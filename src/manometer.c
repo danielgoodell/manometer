@@ -87,6 +87,7 @@ int main(int argc, char** argv)
 	//Initialize the surface the static items are drawn to
 	backgrnd = cairo_image_surface_create(CAIRO_FORMAT_RGB24, x, y);
 	back_ctx = cairo_create(backgrnd);
+
 	//Initialize the surface that is used to combine the static and dynamic items
 	comp = cairo_image_surface_create(CAIRO_FORMAT_RGB24, x, y);
 	comp_ctx = cairo_create(comp);
@@ -119,11 +120,13 @@ int main(int argc, char** argv)
 	}
 
 	//Close the server threads
+
 	_fCloseThreads = 0;
 	pthread_join(scanivalve_thread, NULL);
 	pthread_join(modbus_server_thread, NULL);
 
-	//Clean up cairo surfaces and contexts.
+	//Clean up cairo contexts and surfaces
+
 	cairo_destroy(screen_ctx);
 	cairo_close_x11_surface(sfc);
 	cairo_destroy(back_ctx);

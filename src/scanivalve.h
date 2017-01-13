@@ -7,7 +7,8 @@
 #include <drawing.h>
 #include <pthread.h>
 #include <time.h>
+#include <sys/socket.h>
 
-void *scanivalve(void *arg);
+void * scanivalve(void *);
 
 #endif

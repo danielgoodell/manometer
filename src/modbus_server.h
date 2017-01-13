@@ -9,6 +9,6 @@
 #include <time.h>
 #include <unistd.h>
 
-void *modbus_server(void *arg);
+void * modbus_server(void *);
 
 #endif

@@ -1,0 +1,28 @@
+Requesting Data from : 216.35.221.76
+Connected successfully to : npr.org (216.35.221.76)
+Data Send
+
+
+
+size read 496 
+HTTP/1.1 301 Moved Permanently
+Date: Wed, 11 Jan 2017 22:36:41 GMT
+Server: Apache
+Location: http://www.npr.org/
+Cache-Control: max-age=0
+Expires: Wed, 11 Jan 2017 22:36:41 GMT
+Content-Length: 227
+Content-Type: text/html; charset=iso-8859-1
+Connection: close
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>301 Moved Permanently</title>
+</head><body>
+<h1>Moved Permanently</h1>
+<p>The document has moved <a href="http://www.npr.org/">here</a>.</p>
+</body></html>
+
+
+size read 0 
+done with the loop 

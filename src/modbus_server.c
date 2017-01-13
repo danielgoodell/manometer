@@ -14,5 +14,5 @@ void* modbus_server(void* arg)
 
 		nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
 	}
-	return NULL;
+	return 0;
 }

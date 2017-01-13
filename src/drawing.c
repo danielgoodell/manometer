@@ -183,6 +183,7 @@ void draw_statics(cairo_t* ctx, int w, int h)
 	cairo_show_text(ctx, "psi");
 
 	//Draw the ticks
+
 	cairo_set_line_width(ctx, 2);
 
 	number_of_steps = (COMP_SCALE_TOP - COMP_SCALE_BOT) / COMP_STEP_SIZE;
