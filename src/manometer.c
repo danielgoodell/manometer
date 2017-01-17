@@ -133,6 +133,7 @@ int main(int argc, char** argv)
 	cairo_surface_destroy(backgrnd);
 	cairo_destroy(comp_ctx);
 	cairo_surface_destroy(comp);
+	cairo_debug_reset_static_data();
 
 	return 0;
 }

@@ -149,6 +149,7 @@ void draw_statics(cairo_t* ctx, int w, int h)
 		printf("Image scaling:  x = %1.2f, y = %1.2f \n", x_scaling, y_scaling);
 		cairo_scale(ctx, x_scaling, y_scaling);
 		cairo_set_source_surface(ctx, glob.image, 0, 0);
+		cairo_surface_destroy(glob.image);
 	} else {
 		cairo_set_source_rgb(ctx, 0, 0, 0);
 	}

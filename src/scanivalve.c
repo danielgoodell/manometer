@@ -10,7 +10,7 @@
 void* scanivalve(void* arg)
 {
 	int socket_desc;
-	socket desc = socket(AF_INET, SOCK_STREAM, 0);
+	socket_desc = socket(AF_INET, SOCK_STREAM, 0);
 	
 		if (socket_desc== -1)
 		{
