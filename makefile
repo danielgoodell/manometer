@@ -83,11 +83,7 @@ options:
 	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CC       = ${CC}"
 	
-<<<<<<< HEAD
 cleanup:
-=======
-clang-format:
->>>>>>> 3efb212f65932f57fa07c7a73477f4c7f207a5ad
 	@clang-format -style=file -i ./$(SRCDIR)/*.c
 
 
