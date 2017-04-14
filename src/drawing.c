@@ -11,18 +11,18 @@
 
 static const float DIST_FROM_TOP = 0.37;
 static const float DIST_FROM_BOTTOM = 0.06;
-static const float DIST_FROM_LEFT = 0.05;
-static const float DIST_FROM_RIGHT = 0.05;
-static const float DIST_FROM_MIDDLE = 0.02;
+static const float DIST_FROM_LEFT = 0.04;
+static const float DIST_FROM_RIGHT = 0.03;
+static const float DIST_FROM_MIDDLE = 0.025;
 static const float ATM_PRESS = 14.6959;
 static const char* FONT_FACE = "Lato";
-static const int COMP_SCALE_BOT = 10;
-static const int COMP_SCALE_TOP = 30;
+static const int COMP_SCALE_BOT = -5;
+static const int COMP_SCALE_TOP = 15;
 static const int COMP_STEP_SIZE = 1;
 static const int COMP_STEP_LABEL = 5;
-static const int SECT_SCALE_BOT = 0;
-static const int SECT_SCALE_TOP = 20;
-static const int SECT_STEP_LABEL = 4;
+static const int SECT_SCALE_BOT = -15;
+static const int SECT_SCALE_TOP = 5;
+static const int SECT_STEP_LABEL = 5;
 static const int SECT_STEP_SIZE = 1;
 static const int COMP_PRES_NUMBER = 25;
 static const int SECT_PRES_NUMBER = 39;
@@ -94,7 +94,7 @@ cairo_surface_t* cairo_create_x11_surface(int* x, int* y)
 static float randompressure(void)
 {
 	float result;
-	result = (14.00 + (rand() % 100) / 100.00);
+	result = ((rand() % 100) / 100.00);
 	return result;
 }
 
@@ -163,13 +163,13 @@ void draw_statics(cairo_t* ctx, int w, int h)
 	cairo_select_font_face(ctx, FONT_FACE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
 	cairo_set_font_size(ctx, w * 0.025);
 
-	cairo_text_extents(ctx, "Compressor Statics", &te);
+	cairo_text_extents(ctx, "Compressor Pressures", &te);
 	cairo_move_to(ctx, w * (0.5) / 2 - te.width / 2 - te.x_bearing, h * (1 - DIST_FROM_BOTTOM) + h * 0.045);
-	cairo_show_text(ctx, "Compressor Statics");
+	cairo_show_text(ctx, "Compressor Pressures");
 
-	cairo_text_extents(ctx, "Test Section Statics", &te);
+	cairo_text_extents(ctx, "Test Section Pressures", &te);
 	cairo_move_to(ctx, w * (0.5 + (0.5 - DIST_FROM_RIGHT) / 2) - te.width / 2 - te.x_bearing, h * (1 - DIST_FROM_BOTTOM) + h * 0.045);
-	cairo_show_text(ctx, "Test Section Statics");
+	cairo_show_text(ctx, "Test Section Pressures");
 
 	cairo_text_extents(ctx, "8x6 Manometer", &te);
 	cairo_move_to(ctx, w * 0.5 - te.width / 2 - te.x_bearing, h * (0.01) + te.height);
@@ -207,12 +207,12 @@ void draw_statics(cairo_t* ctx, int w, int h)
 		}
 	}
 
-	//Draw the thin line at atmospheric pressures
+	/*Draw the thin line at atmospheric pressures
 
 	cairo_set_line_width(ctx, 1);
 	cairo_move_to(ctx, w * (DIST_FROM_LEFT - 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - COMP_SCALE_BOT) / (COMP_SCALE_TOP - COMP_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
 	cairo_line_to(ctx, w * (0.5 - DIST_FROM_MIDDLE + 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - COMP_SCALE_BOT) / (COMP_SCALE_TOP - COMP_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
-	cairo_stroke(ctx);
+	cairo_stroke(ctx);*/
 
 	//Draw labels & ticks for the test section
 
@@ -245,12 +245,13 @@ void draw_statics(cairo_t* ctx, int w, int h)
 		}
 	}
 
-	//Draw the thin line at the atmospheric pressures
+	/*Draw the thin line at the atmospheric pressures
 
 	cairo_set_line_width(ctx, 1);
 	cairo_move_to(ctx, w * (0.5 + DIST_FROM_MIDDLE - 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - SECT_SCALE_BOT) / (SECT_SCALE_TOP - SECT_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
 	cairo_line_to(ctx, w * (1 - DIST_FROM_RIGHT + 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - SECT_SCALE_BOT) / (SECT_SCALE_TOP - SECT_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
-	cairo_stroke(ctx);
+	cairo_stroke(ctx);*/
+
 	cairo_pop_group_to_source(ctx);
 	cairo_paint(ctx);
 }
@@ -271,10 +272,10 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_select_font_face(ctx, FONT_FACE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size(ctx, w * 0.02);
-	snprintf(header, 20, "Atm = %2.4f psi", ATM_PRESS);
-	cairo_text_extents(ctx, header, &te);
-	cairo_move_to(ctx, w * 0.99 - te.width, h * 0.01 + te.height);
-	cairo_show_text(ctx, header);
+//	snprintf(header, 20, "Atm = %2.4f psi", ATM_PRESS);
+//	cairo_text_extents(ctx, header, &te);
+//	cairo_move_to(ctx, w * 0.99 - te.width, h * 0.01 + te.height);
+//	cairo_show_text(ctx, header);
 
 	time(&current_time);
 	snprintf(header, 25, "%s", ctime(&current_time));

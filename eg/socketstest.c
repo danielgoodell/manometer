@@ -10,7 +10,7 @@ int main(int argc , char *argv[])
 {
 	 if(argc <2)
     {
-        printf("Please provide a hostname to resolve");
+        printf("Please provide a hostname to resolve.\n");
         exit(1);
     }
     
@@ -19,7 +19,7 @@ int main(int argc , char *argv[])
     int socket_desc;
     struct sockaddr_in server;
     struct addrinfo hints, *servinfo, *p;
-    char message[100] , server_reply[512];
+    char message[100], server_reply[512];
     char *hostname = argv[1];
     char ip[100];
     int  rv;  	
