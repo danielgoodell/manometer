@@ -100,44 +100,6 @@ void* scanivalve(void* arg)
 	}
 	
 	puts("Succesfully connected to binary server\n");
-	
-/*
-	snprintf(message, 100, "\r\n");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-	}
-	
-	snprintf(message, 100, "\r\n");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-	}
-*/
-/*
-	snprintf(message, 100, "stop\r\n");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-	}
-		sleep(1);
-	snprintf(message, 100, "set format t c\r\n");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
- /   {
-       puts("Send failed");
-    }
-		sleep(1);
-	snprintf(message, 100, "set format b s\r\n");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-    }
-*/		sleep(1);
 
     snprintf(message, 100, "scan\r");
 
@@ -156,9 +118,30 @@ void* scanivalve(void* arg)
 			data = (struct statisticaldatarecord *) server_reply;
 			copypress();			
 		}
-	} while(nread > 0 && _fCloseThreads);
-/*		
+	} while(nread > 0 && _fCloseThreads);	
 	
+	while (_fCloseThreads) {
+
+		nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
+	}
+	
+		snprintf(message, 100, "stop\r");
+
+    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
+    {
+        puts("Send failed");
+	}
+	end:
+	close(socket_telnet);
+	puts("\nClosed telnet\n");
+	close(socket_bin);
+	puts("\nClosed binary\n");
+	return NULL;
+}
+
+void printdatarecord(void){
+	int i;
+
 	printf("\nThe packet type is %d\n", data->packet_type);
 	printf("The packet size is %d bytes\n", data->packet_size);
 	printf("The frame number is %d\n", data->frame_number);
@@ -209,27 +192,6 @@ void* scanivalve(void* arg)
 	for (i = 0; i<64; i++)
 		printf("%X, ", data->filler[i]);
 
-	printf("\nend of data record\n");
-
-*/	
-	
-	while (_fCloseThreads) {
-
-		nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
-	}
-	
-		snprintf(message, 100, "stop\r");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-	}
-	end:
-	close(socket_telnet);
-	puts("\nClosed telnet\n");
-	close(socket_bin);
-	puts("\nClosed binary\n");
-	return NULL;
+	printf("\nEnd of data record\n");
 }
-
 
