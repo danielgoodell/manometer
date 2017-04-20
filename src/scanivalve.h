@@ -2,6 +2,7 @@
 #define __SCANIVALVE_H__
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <drawing.h>

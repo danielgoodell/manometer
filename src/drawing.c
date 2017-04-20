@@ -27,6 +27,9 @@ static const int SECT_STEP_SIZE = 1;
 static const int COMP_PRES_NUMBER = 25;
 static const int SECT_PRES_NUMBER = 39;
 
+float comp_pres[25]; //compressor section pressures.
+float sect_pres[39]; //test section pressures.
+
 static struct {
 	cairo_surface_t* image;
 } glob;
@@ -262,8 +265,7 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 {
 
 	int i = 0;
-	float comp_pres[COMP_PRES_NUMBER]; //compressor section pressures.
-	float sect_pres[SECT_PRES_NUMBER]; //test section pressures.
+
 	cairo_text_extents_t te;
 	char header[28];
 	time_t current_time;
@@ -284,14 +286,14 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 	cairo_show_text(ctx, header);
 
 	//Get pressures prior to displaying
-
+/*
 	for (i = 0; i < COMP_PRES_NUMBER; i++) {
-		comp_pres[i] = 5.0 + 5.0 * sin(-i / 7.0 - 3.14) + randompressure();
+		comp_pres[i] = 0;//5.0 + 5.0 * sin(-i / 7.0 - 3.14) + randompressure();
 	}
 	for (i = 0; i < SECT_PRES_NUMBER; i++) {
-		sect_pres[i] = 5.0 * sin(-i / 14.0 - 5.5) + randompressure();
+		sect_pres[i] = 0;//5.0 * sin(-i / 14.0 - 5.5) + randompressure();
 	}
-
+*/
 	//Draw all of the compressor bar graphs
 
 	const float C_BAR_WIDTH = (0.5 - DIST_FROM_LEFT - DIST_FROM_MIDDLE) / COMP_PRES_NUMBER; // Width of the compress bar graph bars
