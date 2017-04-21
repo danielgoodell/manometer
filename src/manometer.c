@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 
 	pthread_t scanivalve_thread, modbus_server_thread;
 
-	int running;
+	int running = 1;
 	int x, y;
 	x = 00;
 	y = 00;
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 	// Begin the threads for the server
 
 	pthread_create(&scanivalve_thread, NULL, scanivalve, (void*)t);
-	pthread_create(&modbus_server_thread, NULL, modbus_server, (void*)t);
+	//pthread_create(&modbus_server_thread, NULL, modbus_server, (void*)t);
 
 	//Initialize the X11 surface used for displaying to screen
 	sfc = cairo_create_x11_surface(&x, &y);
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
 
 	draw_statics(back_ctx, x, y); //Draw the background to the background surface
 
-	for (running = 1; running;) {
+	while (running) {
 
 		cairo_set_source_surface(comp_ctx, backgrnd, 0, 0); // Copy the background to the compositing surface
 		cairo_paint(comp_ctx);
@@ -109,24 +109,22 @@ int main(int argc, char** argv)
 		switch (cairo_check_event(sfc, 0)) {
 		case 0xff1b: // Esc
 		case -1:	 // left mouse button
-			running = 0;
-			break;
 		case 1:
 			running = 0;
 			break;
 		}
 
-		nanosleep((const struct timespec[]){ { 0, 200000000L } }, NULL);
+		nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
 	}
 
 	//Close the server threads
 
 	_fCloseThreads = 0;
 	pthread_join(scanivalve_thread, NULL);
-	pthread_join(modbus_server_thread, NULL);
+	//pthread_join(modbus_server_thread, NULL);
 
 	//Clean up cairo contexts and surfaces
-
+	
 	cairo_destroy(screen_ctx);
 	cairo_close_x11_surface(sfc);
 	cairo_destroy(back_ctx);

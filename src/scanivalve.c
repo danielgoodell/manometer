@@ -13,6 +13,7 @@
 extern float comp_pres[25]; //compressor section pressures.
 extern float sect_pres[39]; //test section pressures.
 
+#define MESSAGE_SIZE 100
 	
 struct statisticaldatarecord{
 		int32_t 	packet_type;
@@ -56,12 +57,10 @@ void* scanivalve(void* arg)
  	int i, nread;
 	int socket_bin, socket_telnet;
 	struct sockaddr_in p;
-	char message[100] = "scan\n";
-	char server_reply[2140];
+	char message[100];
+	char server_reply[2200];
 	int port = 0;
 	
-	printf("Size of statistical data record: %lu", sizeof(*data));
-
 	p.sin_addr.s_addr = inet_addr("191.30.90.110");
 	p.sin_port = htons(port);
 	p.sin_family = AF_INET;
@@ -84,7 +83,7 @@ void* scanivalve(void* arg)
 	}
 		
 	printf("Successfully connected to scanivalve telnet server\n");
-	sleep(1);	
+	nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);	
 	
 	port = 503;
 	p.sin_port=htons(port);
@@ -99,50 +98,57 @@ void* scanivalve(void* arg)
 		goto end;
 	}
 	
-	puts("Succesfully connected to binary server\n");
+	puts("Succesfully connected to binary server");
+	nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
+	    snprintf(message, 100, "\r\n \r\n");
 
-    snprintf(message, 100, "scan\r");
+    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
+    {
+        puts("Send failed");
+    }
+	nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
+    snprintf(message, 100, "scan\r\n");
 
     if(send(socket_telnet, &message, strlen(message) , 0) < 0)
     {
         puts("Send failed");
     }
 
-	puts("Binary Scan started - Waiting for response from Server:\n");
+	printf("Binary Scan started - Waiting for response from Server:");
 	     
     //Receive a reply from the server
-  	do {
- 		nread = recv(socket_bin, server_reply, 2140, 0);
-		//printf("size read %d \n", nread); //size of block read from server
-		if (nread == 2140){
-			data = (struct statisticaldatarecord *) server_reply;
-			copypress();			
+	char * server_reply_p;
+	do{
+		nread = 0;
+ 		server_reply_p = server_reply;
+		while (nread < 2140){
+			nread = nread + recv(socket_bin, server_reply_p, (MESSAGE_SIZE), 0);
+			if (nread < 2140)
+				server_reply_p = &server_reply[nread];
 		}
+		data = (struct statisticaldatarecord *) server_reply;
+		copypress();
+		//printdatarecord();
 	} while(nread > 0 && _fCloseThreads);	
 	
-	while (_fCloseThreads) {
-
-		nanosleep((const struct timespec[]){ { 0, 100000000L } }, NULL);
-	}
-	
-		snprintf(message, 100, "stop\r");
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
+	if(send(socket_telnet, &message, strlen(message) , 0) < 0)
     {
         puts("Send failed");
 	}
+
 	end:
 	close(socket_telnet);
-	puts("\nClosed telnet\n");
+	printf("\nClosed telnet\n");
 	close(socket_bin);
-	puts("\nClosed binary\n");
+	printf("Closed binary\n");
 	return NULL;
 }
 
 void printdatarecord(void){
 	int i;
-
-	printf("\nThe packet type is %d\n", data->packet_type);
+	printf( "\033[2J " );
+	printf( "\033[H  " );
+	printf("The packet type is %d\n", data->packet_type);
 	printf("The packet size is %d bytes\n", data->packet_size);
 	printf("The frame number is %d\n", data->frame_number);
 	printf("The scan type is %d (0-neg, 1-pos, 2-a/c)\n", data->scan_type);
@@ -191,7 +197,6 @@ void printdatarecord(void){
 	printf("\nWhat's in the filler? (hex):\n");
 	for (i = 0; i<64; i++)
 		printf("%X, ", data->filler[i]);
-
-	printf("\nEnd of data record\n");
+	puts("\n");
 }
 

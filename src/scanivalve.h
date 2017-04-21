@@ -12,4 +12,8 @@
 
 void * scanivalve(void *);
 
+void printdatarecord(void);
+
+void copypress(void);
+
 #endif
