@@ -94,7 +94,7 @@ int main(int argc, char** argv)
 
 	draw_statics(back_ctx, x, y); //Draw the background to the background surface
 
-	while (running) {
+	while (running && _fCloseThreads) {
 
 		cairo_set_source_surface(comp_ctx, backgrnd, 0, 0); // Copy the background to the compositing surface
 		cairo_paint(comp_ctx);
