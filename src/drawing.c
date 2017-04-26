@@ -14,7 +14,7 @@ static const float DIST_FROM_BOTTOM = 0.06;
 static const float DIST_FROM_LEFT = 0.04;
 static const float DIST_FROM_RIGHT = 0.03;
 static const float DIST_FROM_MIDDLE = 0.025;
-static const float ATM_PRESS = 14.6959;
+//static const float ATM_PRESS = 14.6959;
 static const char* FONT_FACE = "Lato";
 static const int COMP_SCALE_BOT = -5;
 static const int COMP_SCALE_TOP = 15;
@@ -92,15 +92,6 @@ cairo_surface_t* cairo_create_x11_surface(int* x, int* y)
 	return sfc;
 }
 
-// Create a random pressure between 14 & 15 PSI for testing
-
-static float randompressure(void)
-{
-	float result;
-	result = ((rand() % 100) / 100.00);
-	return result;
-}
-
 /*! Destroy cairo Xlib surface and close X connection.
  */
 
@@ -139,7 +130,7 @@ void draw_statics(cairo_t* ctx, int w, int h)
 
 	cairo_push_group(ctx);
 
-	printf("Screen:  width = %d, height = %d \n", w, h);
+//	printf("Screen:  width = %d, height = %d \n", w, h);
 
 	error = load_image();
 	if (error == 0) {
@@ -149,7 +140,7 @@ void draw_statics(cairo_t* ctx, int w, int h)
 		x_scaling = w / image_width;
 		y_scaling = h / image_height;
 
-		printf("Image scaling:  x = %1.2f, y = %1.2f \n", x_scaling, y_scaling);
+//		printf("Image scaling:  x = %1.2f, y = %1.2f \n", x_scaling, y_scaling);
 		cairo_scale(ctx, x_scaling, y_scaling);
 		cairo_set_source_surface(ctx, glob.image, 0, 0);
 		cairo_surface_destroy(glob.image);
@@ -298,12 +289,13 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 
 	const float C_BAR_WIDTH = (0.5 - DIST_FROM_LEFT - DIST_FROM_MIDDLE) / COMP_PRES_NUMBER; // Width of the compress bar graph bars
 
+	// Draw the thin vertical lines that line up with portions of the compressor 
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_set_line_width(ctx, 1);
-	cairo_move_to(ctx, round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * (1 - DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * 0.24);
-	cairo_move_to(ctx, round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 22)), h * (1 - DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 22)), h * 0.24);
+	cairo_move_to(ctx, 0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * (1 - DIST_FROM_BOTTOM));
+	cairo_line_to(ctx, 0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * 0.225);
+	cairo_move_to(ctx, -0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 22)), h * (1 - DIST_FROM_BOTTOM));
+	cairo_line_to(ctx, -0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 22)), h * 0.225);
 	cairo_stroke(ctx);
 
 	for (i = 0; i < COMP_PRES_NUMBER; i++) {
@@ -322,13 +314,13 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 	//Draw all of the test section bar graphs
 
 	const float S_BAR_WIDTH = (0.5 - DIST_FROM_MIDDLE - DIST_FROM_RIGHT) / SECT_PRES_NUMBER;
-
+	//Draw the thin vertical lines that indicate the aft end of each strut.
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_set_line_width(ctx, 1);
-	cairo_move_to(ctx, w * (0.5 + DIST_FROM_MIDDLE + S_BAR_WIDTH * 15), h * (1 - DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, w * (0.5 + DIST_FROM_MIDDLE + S_BAR_WIDTH * 15), h * 0.17);
-	cairo_move_to(ctx, w * (0.5 + DIST_FROM_MIDDLE + S_BAR_WIDTH * 21), h * (1 - DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, w * (0.5 + DIST_FROM_MIDDLE + S_BAR_WIDTH * 21), h * 0.17);
+	cairo_move_to(ctx, w * (0.5+DIST_FROM_MIDDLE + S_BAR_WIDTH * 15), h * (1 - DIST_FROM_BOTTOM));
+	cairo_line_to(ctx, w * (0.5+DIST_FROM_MIDDLE + S_BAR_WIDTH * 15), h * 0.173);
+	cairo_move_to(ctx, 0.5+w * (0.5 +DIST_FROM_MIDDLE + S_BAR_WIDTH * 21), h * (1 - DIST_FROM_BOTTOM));
+	cairo_line_to(ctx, 0.5+w * (0.5 + DIST_FROM_MIDDLE + S_BAR_WIDTH * 21), h * 0.173);
 	cairo_stroke(ctx);
 
 	for (i = 0; i < SECT_PRES_NUMBER; i++) {

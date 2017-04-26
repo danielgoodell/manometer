@@ -62,7 +62,7 @@ int connectScanivalve(struct sockaddr_in addr){
     timeout.tv_usec = 500000;
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-	printf("Could not create socket for telnet server\nERROR: %s\n", strerror(errno));
+		printf("Could not create socket for telnet server\nERROR: %s\n", strerror(errno));
 	}
 
 	fd_set set;
@@ -71,18 +71,17 @@ int connectScanivalve(struct sockaddr_in addr){
 
 	fcntl(sock, F_SETFL, O_NONBLOCK);
 
-    if ( (status = connect(sock, (struct sockaddr*)&addr, sizeof(addr))) == -1)
-    {
+    if ( (status = connect(sock, (struct sockaddr*)&addr, sizeof(addr))) == -1){
        if ( errno != EINPROGRESS )
            return status;
-
     }
 
     status = select(sock+1, NULL, &set, NULL, &timeout);
 
 	fcntl(sock, F_SETFL, (fcntl(sock, F_GETFL, 0) & ~O_NONBLOCK));
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
 
-	if(status>0)
+	if(status > 0)
     	return sock; //successfully connected
 	else
 		return -1;
@@ -101,64 +100,71 @@ void* scanivalve(void* arg)
 	addr.sin_family = AF_INET;
 	addr.sin_port=htons(23);
 
-	printf(" \nScanivalve ipv4 address : %s\n", inet_ntop(AF_INET, &addr.sin_addr, str, INET_ADDRSTRLEN));
+	printf(" \nScanivalve pressure scanner ip address: %s\n", inet_ntop(AF_INET, &addr.sin_addr, str, INET_ADDRSTRLEN));
 	
 	if ( (socket_telnet=connectScanivalve(addr)) < 0){ //Connect to telnet server
-		printf("Failed to connect to telnet server\n", strerror(errno));
-		goto end;
+		printf("Failed to connect to Scanivalve telnet server, exiting.\n");
+		close(socket_telnet);
+		_fCloseThreads = 0;
+		return NULL;
 	}
 
 	addr.sin_port=htons(503);
 	
 	if ( (socket_bin=connectScanivalve(addr)) < 0){ //Connect to binary server
-		printf("Failed to connect to binary server\n", strerror(errno));
-		goto end;
+		printf("Failed to connect to Scanivalve binary server, exiting.\n");
+		close(socket_telnet);
+		close(socket_bin);
+		_fCloseThreads = 0;
+		return NULL;
 		}
 
-
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-	
-    }
+	nanosleep((const struct timespec[]){ { 0, 200000000L } }, NULL);
 
     snprintf(message, 100, "scan\r\n");
 
     if(send(socket_telnet, &message, strlen(message) , 0) < 0)
     {
-        puts("Send failed");
+        puts("Scan start command failed to be sent");
     }
 
-	printf("Binary Scan started - Waiting for response from Server:\n");
+	printf("Succesfully connected to the Scanivalve pressure scanner. Receiving data.\n");
 	     
     //Receive a reply from the server
 	char * server_reply_p;
 
-	fcntl(socket_bin, F_SETFL, (fcntl(socket_bin, F_GETFL, 0) & ~O_NONBLOCK));
-
 	do{
 		nread = 0;
  		server_reply_p = server_reply;
-		while (nread < 2140){
-			nread = nread + recv(socket_bin, server_reply_p, (MESSAGE_SIZE), 0);
-			if (nread < 2140)
+		while (nread < 2140 && nread >= 0 && _fCloseThreads){
+			nread = nread + recv(socket_bin, server_reply_p, (MESSAGE_SIZE-nread), 0);
+			if (((int32_t)*server_reply) != 11){
+				nread = 0;
+				server_reply_p = server_reply;
+				continue;
+			}
+			if (nread == -1 && errno == EAGAIN){
+				nread = 0;
+				continue;
+			}
+			if (nread < 2140 && nread > 0)
 				server_reply_p = &server_reply[nread];
 		}
 		data = (struct statisticaldatarecord *) server_reply;
 		copypress();
 		printdatarecord();
+
 	} while(nread > 0 && _fCloseThreads);	
+	if (nread < 0)
+		printf("Stopping due to error: %s\n", strerror(errno));
+
+	snprintf(message, 100, "stop\r\n");
 	
 	if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-	}
-
-	end:
+    	puts("Scan stop command failed to be sent");
+	
 	close(socket_telnet);
-	printf("\nClosed telnet connection\n");
 	close(socket_bin);
-	printf("Closed binary connection\n");
 	_fCloseThreads = 0;
 	return NULL;
 }
