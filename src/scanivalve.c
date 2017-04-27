@@ -159,7 +159,7 @@ void* scanivalve(void* arg)
 		}
 		data = (struct statisticaldatarecord *) server_reply;
 		copypress();
-		printdatarecord();
+//		printdatarecord();
 
 	} while(nread > 0 && _fCloseThreads);	
 	if (nread < 0)

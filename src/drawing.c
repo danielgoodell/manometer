@@ -87,6 +87,7 @@ cairo_surface_t* cairo_create_x11_surface(int* x, int* y)
 	/* assume that window_title_property is our XTextProperty, and is */
 	/* defined to contain the desired window title.     */
 	XSetWMName(dsp, da, &window_title_property);
+	XRaiseWindow(dsp, da);
 
 	return sfc;
 }

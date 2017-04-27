@@ -58,6 +58,7 @@ int cairo_check_event(cairo_surface_t* sfc, int block)
 
 int main(int argc, char** argv)
 { 
+	printf("\n8x6 Supersonic Wind Tunnel Manometer - NASA Glenn Research Center - 2017\n");
 	cairo_surface_t* sfc;	  //XLib surface that is actually displayed on the screen.
 	cairo_surface_t* backgrnd; //Image surface that is used to generate the background
 	cairo_surface_t* comp;
@@ -93,7 +94,7 @@ int main(int argc, char** argv)
 	draw_statics(back_ctx, x, y); //Draw the background to the background surface
 
 	while (running && _fCloseThreads) {
-
+		
 		cairo_set_source_surface(comp_ctx, backgrnd, 0, 0); // Copy the background to the compositing surface
 		cairo_paint(comp_ctx);
 
