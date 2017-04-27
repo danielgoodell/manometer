@@ -1,0 +1,116 @@
+                       10x10 SUPERSONIC WIND TUNNEL        6/91 REV 3         
+                                                            
+               START UP CHECKSHEET FOR ELECTRONIC MANOMETER SYSTEM            
+                
+               COMPLETED BY: ________________________ DATE:_______      
+
+
+A).  SUPPLY PRESSURE SYSTEM SET-UP
+
+   ______  Power ON system vacuum pump located in the basement.
+
+   ______  In data room power ON to ESP unit (DPT6400).
+           
+   ______  Close vacuum vent valve.
+
+   ______  Open vacuum supply valve.
+
+   ______  Adjust vacuum regulator to read at least 25 IN HG VAC on gage.
+                   
+   ______  Turn supply, span 1 and span 2 regulators fully counter-clockwise 
+           (but not out of the regulators).
+
+   ______  Close air vent valve.
+
+   ______  Open air supply valve.
+
+   ______  Adjust supply regulator to read 90 psig on supply gage.
+          
+   ______  Adjust span 2 regulator to read 25 psig on span 2 gage.
+           
+   ______  Adjust span 1 regulator to read 5 psig on span 1 gage.
+          
+
+B. RUN DISPLAY PROGRAM
+
+   ______  Turn ON power to Transducer Interconnect Panel located above
+           DPT unit.
+
+   ______  Verify that power is ON to computer. If not on, power up computer.
+           Computer will automatically boot-up and run pressure profile program.
+              ** If computer is already on and program is not running, 
+                 press computer RESET button to re-boot computer and run 
+                 pressure profile program.
+
+   ______  Press CAL button located on panel above DPT unit to calibrate
+           DPT unit.
+
+   ______  Turn ON power to pressure profile CRT located in the
+           control room above operator's console.
+
+   ______  On CRT verify that the profiles are level and reading 
+           atmosphere.
+              ** If profiles are not level or are showing instability,
+                 Re-calibrate the ESP unit by pressing the CAL button
+                 located on the panel above the DPT unit.
+
+                 REPORT ANY PROBLEMS TO OPERATIONS ENGINEER
+
+                                 -1-
+
+                       10X10 SUPERSONIC WIND TUNNEL        6/91 REV3            
+                                                          
+               SHUTDOWN CHECKSHEET FOR ELECTRONIC MANOMETER SYSTEM    
+
+               COMPLETED BY: _______________________ DATE: _______   
+
+
+
+A. SUPPLY PRESSURE SYSTEM
+
+
+  _______  Turn OFF power to vacuum pump in basement.
+
+  _______  Close air supply valve.
+
+  _______  Open air vent valve.
+
+  _______  Turn supply, span 1 and span 2 regulators fully counter-clockwise 
+           (but not out of regulator).
+                                     
+  _______  Close vacuum supply valve.
+
+  _______  Open vacuum vent valve.
+
+
+   
+B. ESP DISPLAY SYSTEM
+
+
+  _______  Turn OFF power to ESP unit (DPT6400).
+
+  _______  Turn OFF power to Transducer Interconnect Panel.
+
+  _______  Turn OFF power to computer.
+
+  _______  Turn OFF power to pressure profile CRT in the control room.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                 -2-
+
+

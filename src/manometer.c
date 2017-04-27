@@ -5,14 +5,12 @@
 #include <cairo/cairo.h>
 #include <drawing.h>
 #include <math.h>
-#include <modbus_server.h>
 #include <pthread.h>
 #include <scanivalve.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <gperftools/profiler.h>
 
 /*! Check for Xlib Mouse/Keypress events. All other events are discarded. 
  * @param sfc Pointer to Xlib surface.
@@ -60,7 +58,6 @@ int cairo_check_event(cairo_surface_t* sfc, int block)
 
 int main(int argc, char** argv)
 { 
-//	ProfilerStart("./manometer.prof");
 	cairo_surface_t* sfc;	  //XLib surface that is actually displayed on the screen.
 	cairo_surface_t* backgrnd; //Image surface that is used to generate the background
 	cairo_surface_t* comp;
@@ -105,6 +102,9 @@ int main(int argc, char** argv)
 		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
 		cairo_paint(screen_ctx);
 
+		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
+		cairo_paint(screen_ctx);
+		
 		cairo_surface_flush(sfc);
 
 		switch (cairo_check_event(sfc, 0)) {
@@ -120,11 +120,10 @@ int main(int argc, char** argv)
 		nanosleep((const struct timespec[]){ { 0, 200000000L } }, NULL);
 	}
 
-	//Close the server threads
+	//Close the threads
 
 	_fCloseThreads = 0;
 	pthread_join(scanivalve_thread, NULL);
-	//pthread_join(modbus_server_thread, NULL);
 
 	//Clean up cairo contexts and surfaces
 	
@@ -135,7 +134,6 @@ int main(int argc, char** argv)
 	cairo_destroy(comp_ctx);
 	cairo_surface_destroy(comp);
 	cairo_debug_reset_static_data();
-//	ProfilerStop();
 
 	return 0;
 }

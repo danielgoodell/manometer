@@ -1,0 +1,117 @@
+                          8x6/9x15 WIND TUNNEL                  6/91 REV1
+                                     
+            START UP CHECKSHEET FOR ELECTRONIC MANOMETER SYSTEM
+                            
+
+            COMPLETED BY: ______________________  DATE:________
+
+
+A. PRESSURE SYSTEM SET-UP
+
+
+   ______  Assure power is ON to ESP unit (DPT6400).
+        
+   ______  Close vent valve V8.
+
+   ______  Open vacuum supply valve V7.
+
+   ______  Adjust regulator R4 to read 20 IN HG VAC on gage G4.
+           (zero pressure)
+
+   ______  Turn regulators R1 & R2 fully counter-clockwise (but not
+           out of the regulators).
+
+   ______  Close vent valve V2.
+
+   ______  Open supply valve V1.
+
+   ______  Adjust regulator R1 to read 85 psig on gage G1.
+           (shuttle pressure)
+
+   ______  Adjust regulator R2 to read 12 psig on gage G2.
+           (span pressure)
+
+
+
+B. RUN DISPLAY PROGRAM
+
+
+   ______  Turn ON power to computer.  Computer will automatically
+           boot-up and run pressure profile program.
+
+        ** If computer is already on, press computer RESET button to
+           re-boot computer and run pressure profile program.
+
+   ______  Turn ON power to pressure profile CRT'S located in the
+           control room (1 above each operator's console)
+
+   ______  On CRT'S verify that the profiles are level and reading 
+           atmosphere.
+
+       **  If profiles are not level or are showing instability,
+           Re-calibrate the ESP unit by pressing the CAL button.
+
+
+               REPORT ANY PROBLEMS TO THE OPERATIONS ENGINEER.
+
+                                   -1-
+
+                          8x6/9x15 WIND TUNNEL                  6/91 REV1
+                                  
+            SHUTDOWN CHECKSHEET FOR ELECTRONIC MANOMETER SYSTEM
+
+
+            COMPLETED BY: ______________________  DATE:________
+
+
+A. SUPPLY PRESSURE SYSTEM
+
+
+  _______  Turn regulator R2 fully counter-clockwise (but not out
+           of regulator).
+
+  _______  Turn regulator R1 fully counter-clockwise (but not out
+           of regulator).
+
+  _______  Close supply valve V1.
+
+  _______  Open vent valve V2.
+
+  _______  Close vacuum supply valve V7.
+
+  _______  Open vacuum vent valve V8.
+
+
+
+
+B. ESP DISPLAY SYSTEM
+
+
+  _______  Turn OFF power to ESP unit (DPT6400).
+
+  _______  Turn OFF power to computer.
+
+  _______  Turn OFF power to pressure profile CRT'S in 
+           the control room.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   -2-
+
+
+

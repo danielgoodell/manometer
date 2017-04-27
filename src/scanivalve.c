@@ -125,7 +125,14 @@ void* scanivalve(void* arg)
 
     if(send(socket_telnet, &message, strlen(message) , 0) < 0)
     {
-        puts("Scan start command failed to be sent");
+        printf("Scan start command failed to be sent\n");
+		printf("Closing connections and shutting down.\n");
+		printf("Scanivalve may have crashed or may need more time to complete bootup.\n");
+		close(socket_telnet);
+		close(socket_bin);
+		_fCloseThreads = 0;
+		return NULL;
+		
     }
 
 	printf("Succesfully connected to the Scanivalve pressure scanner. Receiving data.\n");

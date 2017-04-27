@@ -16,8 +16,8 @@ DEPEXT      := d
 OBJEXT      := o
 
 #Flags, Libraries and Includes
-CFLAGS      = -lprofiler -gdwarf -Wall -pedantic -std=c11 -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -lm -Og -lpthread -lrt -D_POSIX_C_SOURCE=200809L $(shell pkg-config --cflags --libs x11 cairo libmodbus)
-LDFLAGS     = -lprofiler -lm -lpthread -lrt $(shell pkg-config --libs x11 cairo libmodbus)
+CFLAGS      = -gdwarf -Wall -pedantic -std=c11 -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -lm -Og -lpthread -lrt -D_POSIX_C_SOURCE=200809L $(shell pkg-config --cflags --libs x11 cairo libmodbus)
+LDFLAGS     = -lm -lpthread -lrt $(shell pkg-config --libs x11 cairo libmodbus)
 INC         := -I$(INCDIR) -I$(SRCDIR)
 INCDEP      := -I$(INCDIR) -I$(SRCDIR)
 

@@ -9,23 +9,22 @@
 #include <time.h>
 #include <unistd.h>
 
-static const float DIST_FROM_TOP = 0.37;
-static const float DIST_FROM_BOTTOM = 0.06;
-static const float DIST_FROM_LEFT = 0.04;
-static const float DIST_FROM_RIGHT = 0.03;
-static const float DIST_FROM_MIDDLE = 0.025;
-//static const float ATM_PRESS = 14.6959;
-static const char* FONT_FACE = "Lato";
-static const int COMP_SCALE_BOT = -5;
-static const int COMP_SCALE_TOP = 15;
-static const int COMP_STEP_SIZE = 1;
-static const int COMP_STEP_LABEL = 5;
-static const int SECT_SCALE_BOT = -15;
-static const int SECT_SCALE_TOP = 5;
-static const int SECT_STEP_LABEL = 5;
-static const int SECT_STEP_SIZE = 1;
-static const int COMP_PRES_NUMBER = 25;
-static const int SECT_PRES_NUMBER = 39;
+#define DIST_FROM_TOP 0.37
+#define DIST_FROM_BOTTOM 0.06
+#define DIST_FROM_LEFT 0.04
+#define DIST_FROM_RIGHT 0.03
+#define DIST_FROM_MIDDLE 0.025
+#define FONT_FACE "Lato"
+#define COMP_SCALE_BOT -5
+#define COMP_SCALE_TOP 15
+#define COMP_STEP_SIZE 1
+#define COMP_STEP_LABEL 5
+#define SECT_SCALE_BOT -15
+#define SECT_SCALE_TOP 5
+#define SECT_STEP_LABEL 5
+#define SECT_STEP_SIZE 1
+#define COMP_PRES_NUMBER 25
+#define SECT_PRES_NUMBER 39
 
 float comp_pres[25]; //compressor section pressures.
 float sect_pres[39]; //test section pressures.
@@ -107,7 +106,7 @@ void cairo_close_x11_surface(cairo_surface_t* sfc)
 
 int load_image(void)
 {
-	glob.image = cairo_image_surface_create_from_png("background.png");
+	glob.image = cairo_image_surface_create_from_png("/home/manometer/manometer/background.png");
 	if (cairo_surface_status(glob.image) != CAIRO_STATUS_SUCCESS) {
 		printf("Error loading ./background.png : %s \nUsing a black background. \n", cairo_status_to_string(cairo_surface_status(glob.image)));
 		return 1;
@@ -119,7 +118,6 @@ int load_image(void)
 
 void draw_statics(cairo_t* ctx, int w, int h)
 {
-
 	int number_of_steps;
 	double x_scaling = 0, y_scaling = 0;
 	int i = 0;
@@ -130,7 +128,7 @@ void draw_statics(cairo_t* ctx, int w, int h)
 
 	cairo_push_group(ctx);
 
-//	printf("Screen:  width = %d, height = %d \n", w, h);
+//	printf("Screen Resolution:  width = %d, height = %d \n", w, h);
 
 	error = load_image();
 	if (error == 0) {
@@ -139,8 +137,6 @@ void draw_statics(cairo_t* ctx, int w, int h)
 		image_height = cairo_image_surface_get_height(glob.image);
 		x_scaling = w / image_width;
 		y_scaling = h / image_height;
-
-//		printf("Image scaling:  x = %1.2f, y = %1.2f \n", x_scaling, y_scaling);
 		cairo_scale(ctx, x_scaling, y_scaling);
 		cairo_set_source_surface(ctx, glob.image, 0, 0);
 		cairo_surface_destroy(glob.image);
@@ -180,7 +176,6 @@ void draw_statics(cairo_t* ctx, int w, int h)
 	//Draw the ticks
 
 	cairo_set_line_width(ctx, 2);
-
 	number_of_steps = (COMP_SCALE_TOP - COMP_SCALE_BOT) / COMP_STEP_SIZE;
 
 	for (i = 0; i <= number_of_steps; i++) {
@@ -200,13 +195,6 @@ void draw_statics(cairo_t* ctx, int w, int h)
 			cairo_stroke(ctx);
 		}
 	}
-
-	/*Draw the thin line at atmospheric pressures
-
-	cairo_set_line_width(ctx, 1);
-	cairo_move_to(ctx, w * (DIST_FROM_LEFT - 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - COMP_SCALE_BOT) / (COMP_SCALE_TOP - COMP_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
-	cairo_line_to(ctx, w * (0.5 - DIST_FROM_MIDDLE + 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - COMP_SCALE_BOT) / (COMP_SCALE_TOP - COMP_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
-	cairo_stroke(ctx);*/
 
 	//Draw labels & ticks for the test section
 
@@ -239,13 +227,6 @@ void draw_statics(cairo_t* ctx, int w, int h)
 		}
 	}
 
-	/*Draw the thin line at the atmospheric pressures
-
-	cairo_set_line_width(ctx, 1);
-	cairo_move_to(ctx, w * (0.5 + DIST_FROM_MIDDLE - 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - SECT_SCALE_BOT) / (SECT_SCALE_TOP - SECT_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
-	cairo_line_to(ctx, w * (1 - DIST_FROM_RIGHT + 0.01), 0.5 + round(h * ((1.0 - DIST_FROM_BOTTOM) - (ATM_PRESS - SECT_SCALE_BOT) / (SECT_SCALE_TOP - SECT_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP))));
-	cairo_stroke(ctx);*/
-
 	cairo_pop_group_to_source(ctx);
 	cairo_paint(ctx);
 }
@@ -256,7 +237,6 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 {
 
 	int i = 0;
-
 	cairo_text_extents_t te;
 	char header[28];
 	time_t current_time;
@@ -265,10 +245,6 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_select_font_face(ctx, FONT_FACE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 	cairo_set_font_size(ctx, w * 0.02);
-//	snprintf(header, 20, "Atm = %2.4f psi", ATM_PRESS);
-//	cairo_text_extents(ctx, header, &te);
-//	cairo_move_to(ctx, w * 0.99 - te.width, h * 0.01 + te.height);
-//	cairo_show_text(ctx, header);
 
 	time(&current_time);
 	snprintf(header, 25, "%s", ctime(&current_time));
@@ -276,20 +252,12 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 	cairo_move_to(ctx, w * 0.01, h * 0.01 + te.height);
 	cairo_show_text(ctx, header);
 
-	//Get pressures prior to displaying
-/*
-	for (i = 0; i < COMP_PRES_NUMBER; i++) {
-		comp_pres[i] = 0;//5.0 + 5.0 * sin(-i / 7.0 - 3.14) + randompressure();
-	}
-	for (i = 0; i < SECT_PRES_NUMBER; i++) {
-		sect_pres[i] = 0;//5.0 * sin(-i / 14.0 - 5.5) + randompressure();
-	}
-*/
 	//Draw all of the compressor bar graphs
 
 	const float C_BAR_WIDTH = (0.5 - DIST_FROM_LEFT - DIST_FROM_MIDDLE) / COMP_PRES_NUMBER; // Width of the compress bar graph bars
 
 	// Draw the thin vertical lines that line up with portions of the compressor 
+
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_set_line_width(ctx, 1);
 	cairo_move_to(ctx, 0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * (1 - DIST_FROM_BOTTOM));
@@ -314,7 +282,9 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 	//Draw all of the test section bar graphs
 
 	const float S_BAR_WIDTH = (0.5 - DIST_FROM_MIDDLE - DIST_FROM_RIGHT) / SECT_PRES_NUMBER;
+
 	//Draw the thin vertical lines that indicate the aft end of each strut.
+
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_set_line_width(ctx, 1);
 	cairo_move_to(ctx, w * (0.5+DIST_FROM_MIDDLE + S_BAR_WIDTH * 15), h * (1 - DIST_FROM_BOTTOM));
@@ -334,6 +304,7 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 		cairo_rectangle(ctx, w * (0.5 + DIST_FROM_MIDDLE + S_BAR_WIDTH * (i + 0.05)), round(h * (1 - DIST_FROM_BOTTOM)), w * 0.9 * S_BAR_WIDTH, round(-h * (sect_pres[i] - SECT_SCALE_BOT) / (SECT_SCALE_TOP - SECT_SCALE_BOT) * (1.0 - DIST_FROM_BOTTOM - DIST_FROM_TOP)));
 		cairo_stroke(ctx);
 	}
+
 	cairo_pop_group_to_source(ctx);
 	cairo_paint(ctx);
 }
