@@ -50,9 +50,11 @@ struct statisticaldatarecord * data;
 void copypress(void){
 	for(int j = 0; j<25; j++)
 		comp_pres[j] = data->pressure[j];
+
 	for(int j = 25; j<64; j++)
 		sect_pres[j-25] = data->pressure[j];
-}
+
+	}
 
 int connectScanivalve(struct sockaddr_in addr){
 	int sock;
@@ -60,6 +62,18 @@ int connectScanivalve(struct sockaddr_in addr){
 	struct timeval timeout;
     timeout.tv_sec = 0;
     timeout.tv_usec = 500000;
+	int wait_time = 0;
+	struct timespec t;
+
+	clock_gettime(CLOCK_BOOTTIME, &t);
+	printf("%llu Seconds since power on. ", 
+	(unsigned long long)t.tv_sec);
+	wait_time = 90-t.tv_sec;
+	if (wait_time > 0){
+		printf("There hasn't been enough time since reboot to connect to the scanivalve. \n");
+		printf("Waiting %d seconds.\n", wait_time);
+		sleep(wait_time);
+	}	
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("Could not create socket for telnet server\nERROR: %s\n", strerror(errno));
@@ -103,7 +117,7 @@ void* scanivalve(void* arg)
 	printf(" \nScanivalve pressure scanner ip address: %s\n", inet_ntop(AF_INET, &addr.sin_addr, str, INET_ADDRSTRLEN));
 	
 	if ( (socket_telnet=connectScanivalve(addr)) < 0){ //Connect to telnet server
-		printf("Failed to connect to Scanivalve telnet server, exiting.\n");
+		printf("Failed to connect to Scanivalve telnet server, shutting down.\n");
 		close(socket_telnet);
 		_fCloseThreads = 0;
 		return NULL;
@@ -112,7 +126,7 @@ void* scanivalve(void* arg)
 	addr.sin_port=htons(503);
 	
 	if ( (socket_bin=connectScanivalve(addr)) < 0){ //Connect to binary server
-		printf("Failed to connect to Scanivalve binary server, exiting.\n");
+		printf("Failed to connect to Scanivalve binary server, shutting down.\n");
 		close(socket_telnet);
 		close(socket_bin);
 		_fCloseThreads = 0;
@@ -123,16 +137,14 @@ void* scanivalve(void* arg)
 
     snprintf(message, 100, "scan\r\n");
 
-    if(send(socket_telnet, &message, strlen(message) , 0) < 0)
-    {
-        printf("Scan start command failed to be sent\n");
-		printf("Closing connections and shutting down.\n");
-		printf("Scanivalve may have crashed or may need more time to complete bootup.\n");
+    if(send(socket_telnet, &message, strlen(message) , 0) < 0){
+		printf("Scan start command failed to be sent after connecting.\n");
+		printf("Error given: %s\n", strerror(errno));
+		printf("Scanivalve may have crashed or may need just need more time to complete bootup.\n");
 		close(socket_telnet);
 		close(socket_bin);
 		_fCloseThreads = 0;
 		return NULL;
-		
     }
 
 	printf("Succesfully connected to the Scanivalve pressure scanner. Receiving data.\n");
@@ -159,7 +171,7 @@ void* scanivalve(void* arg)
 		}
 		data = (struct statisticaldatarecord *) server_reply;
 		copypress();
-//		printdatarecord();
+		printdatarecord();
 
 	} while(nread > 0 && _fCloseThreads);	
 	if (nread < 0)
@@ -183,7 +195,7 @@ void printdatarecord(void){
 	printf("The packet type is %d\n", data->packet_type);
 	printf("The packet size is %d bytes\n", data->packet_size);
 	printf("The frame number is %d\n", data->frame_number);
-	printf("The scan type is %d (0-neg, 1-pos, 2-a/c)\n", data->scan_type);
+//	printf("The scan type is %d (0-neg, 1-pos, 2-a/c)\n", data->scan_type);
 	printf("The scanning rate is is %2.4f hz\n", data->frame_rate);
 //	printf("The valve status is %x (what does this mean?)\n", data->valve_status);
 //	printf("The units index is %d \n", data->units_index);	
@@ -201,7 +213,7 @@ void printdatarecord(void){
 //	printf("\nThe frame time is: %d ns\n", data->frame_time_ns);
 //	printf("\nThe ext trigger time is: %d s\n", data->ext_trig_time_s);
 //	printf("\nThe ext trigger time is: %d ns\n", data->ext_trig_time_ns);
-	
+/*	
 	printf("\nThe rolling average pressure array is:\n");
 	for (i = 0; i<64; i++)
 			printf("%c%2.2f%c", (data->roll_ave_press[i] >= 0) ? ' ' : '-', fabs(data->roll_ave_press[i]), (i%16==15 || i==63) ? '\n' : '\t');
@@ -225,7 +237,7 @@ void printdatarecord(void){
 	printf("\nThe rolling ave exc outliers is:\n");
 	for (i = 0; i<64; i++)
 		printf("%c%2.2f%c", (data->roll_ave_excl_outlier[i] >= 0) ? ' ' : '-', fabs(data->roll_ave_excl_outlier[i]), (i%16==15 || i==63) ? '\n' : '\t');
-
+*/
 //	printf("\nWhat's in the filler? (hex):\n");
 //	for (i = 0; i<64; i++)
 //		printf("%X, ", data->filler[i]);

@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 /*! Check for Xlib Mouse/Keypress events. All other events are discarded. 
  * @param sfc Pointer to Xlib surface.
@@ -68,7 +69,8 @@ int main(int argc, char** argv)
 	cairo_t* comp_ctx;
 
 	pthread_t scanivalve_thread;
-	int running = 1;
+	bool running = true;
+	bool help = false;
 	int x, y;
 	x = 00;
 	y = 00;
@@ -99,22 +101,31 @@ int main(int argc, char** argv)
 		cairo_paint(comp_ctx);
 
 		draw_dynamics(comp_ctx, x, y); //Draw the dynamic items to the compositing surface.
+		
 
-		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
-		cairo_paint(screen_ctx);
+		if (help){ //if h has been pressed, then display the help screen until h is pressed again
+			;
+		}
 
 		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
 		cairo_paint(screen_ctx);
 		
+//		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
+//		cairo_paint(screen_ctx);
+		
 		cairo_surface_flush(sfc);
 
 		switch (cairo_check_event(sfc, 0)) {
+			case 0x48:	//press H for help
+			case 0x68:	//press h for help
+				help = !help;
+				break;				
 			case 0xff1b: // ESC
 			case 0x51: // Q
 			case 0x71: // q
 //			case -1:	 // left mouse button
 //			case 1:		 // Right mouse button
-				running = 0;
+				running = false;
 				break;
 		}
 
@@ -128,13 +139,14 @@ int main(int argc, char** argv)
 
 	//Clean up cairo contexts and surfaces
 	
-	cairo_destroy(screen_ctx);
+
 	cairo_close_x11_surface(sfc);
 	cairo_destroy(back_ctx);
 	cairo_surface_destroy(backgrnd);
+	cairo_destroy(screen_ctx);
 	cairo_destroy(comp_ctx);
 	cairo_surface_destroy(comp);
-	cairo_debug_reset_static_data();
+//	cairo_debug_reset_static_data();
 
 	return 0;
 }

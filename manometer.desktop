@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Manometer Autostart
+Comment=Start the Manometer	
+Exec=lxterminal -e "/home/pi/manometer/manometer.sh" 
+Terminal=false
+Icon=/home/pi/manometer/manometer.svg
+Name[en_US]=8x6 Manometer
+Path=/home/pi/manometer

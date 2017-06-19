@@ -16,7 +16,7 @@ DEPEXT      := d
 OBJEXT      := o
 
 #Flags, Libraries and Includes
-CFLAGS      = -gdwarf -Wall -pedantic -std=c11 -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -lm -Og -lpthread -lrt -D_POSIX_C_SOURCE=200809L $(shell pkg-config --cflags --libs x11 cairo libmodbus)
+CFLAGS      = -gdwarf -Wall -pedantic -std=c11 -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -lm -Og -lpthread -lrt -D_POSIX_C_SOURCE=200809L -fdiagnostics-color=always $(shell pkg-config --cflags --libs x11 cairo libmodbus)
 LDFLAGS     = -lm -lpthread -lrt $(shell pkg-config --libs x11 cairo libmodbus)
 INC         := -I$(INCDIR) -I$(SRCDIR)
 INCDEP      := -I$(INCDIR) -I$(SRCDIR)
@@ -83,8 +83,8 @@ options:
 	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CC       = ${CC}"
 	
-cleanup:
-	@clang-format -style=file -i ./$(SRCDIR)/*.c
+nice:
+	@clang-format-3.9 -style=file -i ./$(SRCDIR)/*.c
 
 
 

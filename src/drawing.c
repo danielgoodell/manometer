@@ -107,7 +107,7 @@ void cairo_close_x11_surface(cairo_surface_t* sfc)
 
 int load_image(void)
 {
-	glob.image = cairo_image_surface_create_from_png("/home/manometer/manometer/background.png");
+	glob.image = cairo_image_surface_create_from_png("./background.png");
 	if (cairo_surface_status(glob.image) != CAIRO_STATUS_SUCCESS) {
 		printf("Error loading ./background.png : %s \nUsing a black background. \n", cairo_status_to_string(cairo_surface_status(glob.image)));
 		return 1;
@@ -261,8 +261,8 @@ void draw_dynamics(cairo_t* ctx, int w, int h)
 
 	cairo_set_source_rgb(ctx, 1, 1, 1);
 	cairo_set_line_width(ctx, 1);
-	cairo_move_to(ctx, 0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * (1 - DIST_FROM_BOTTOM));
-	cairo_line_to(ctx, 0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * 0.225);
+	cairo_move_to(ctx,  0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * (1 - DIST_FROM_BOTTOM));
+	cairo_line_to(ctx,  0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 6)), h * 0.225);
 	cairo_move_to(ctx, -0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 22)), h * (1 - DIST_FROM_BOTTOM));
 	cairo_line_to(ctx, -0.5+round(w * (DIST_FROM_LEFT + C_BAR_WIDTH * 22)), h * 0.225);
 	cairo_stroke(ctx);
