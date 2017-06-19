@@ -7,11 +7,11 @@
 #include <math.h>
 #include <pthread.h>
 #include <scanivalve.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <stdbool.h>
 
 /*! Check for Xlib Mouse/Keypress events. All other events are discarded. 
  * @param sfc Pointer to Xlib surface.
@@ -58,8 +58,9 @@ int cairo_check_event(cairo_surface_t* sfc, int block)
 }
 
 int main(int argc, char** argv)
-{ 
-	printf("\n8x6 Supersonic Wind Tunnel Manometer - NASA Glenn Research Center - 2017\n");
+{
+	printf("\n10x10 Supersonic Wind Tunnel Manometer - NASA Glenn Research Center - 2017\n");
+	printf("\nDesigned and built at 8x6/9x15 SWT/LSWT\n");
 	cairo_surface_t* sfc;	  //XLib surface that is actually displayed on the screen.
 	cairo_surface_t* backgrnd; //Image surface that is used to generate the background
 	cairo_surface_t* comp;
@@ -96,37 +97,37 @@ int main(int argc, char** argv)
 	draw_statics(back_ctx, x, y); //Draw the background to the background surface
 
 	while (running && _fCloseThreads) {
-		
+
 		cairo_set_source_surface(comp_ctx, backgrnd, 0, 0); // Copy the background to the compositing surface
 		cairo_paint(comp_ctx);
+		//		cairo_paint(screen_ctx);
 
-		draw_dynamics(comp_ctx, x, y); //Draw the dynamic items to the compositing surface.
-		
+		draw_dynamics(comp_ctx, x, y);//Draw the dynamic items to the compositing surface.
 
-		if (help){ //if h has been pressed, then display the help screen until h is pressed again
+		if (help) { //if h has been pressed, then display the help screen until h is pressed again
 			;
 		}
 
 		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
 		cairo_paint(screen_ctx);
-		
-//		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
-//		cairo_paint(screen_ctx);
-		
+
+		//		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.
+		//		cairo_paint(screen_ctx);
+
 		cairo_surface_flush(sfc);
 
 		switch (cairo_check_event(sfc, 0)) {
-			case 0x48:	//press H for help
-			case 0x68:	//press h for help
-				help = !help;
-				break;				
-			case 0xff1b: // ESC
-			case 0x51: // Q
-			case 0x71: // q
-//			case -1:	 // left mouse button
-//			case 1:		 // Right mouse button
-				running = false;
-				break;
+		case 0x48: //press H for help
+		case 0x68: //press h for help
+			help = !help;
+			break;
+		case 0xff1b: // ESC
+		case 0x51:   // Q
+		case 0x71:   // q
+					 //			case -1:	 // left mouse button
+					 //			case 1:		 // Right mouse button
+			running = false;
+			break;
 		}
 
 		nanosleep((const struct timespec[]){ { 0, 200000000L } }, NULL);
@@ -138,15 +139,13 @@ int main(int argc, char** argv)
 	pthread_join(scanivalve_thread, NULL);
 
 	//Clean up cairo contexts and surfaces
-	
 
+	cairo_destroy(screen_ctx);
 	cairo_close_x11_surface(sfc);
 	cairo_destroy(back_ctx);
 	cairo_surface_destroy(backgrnd);
-	cairo_destroy(screen_ctx);
 	cairo_destroy(comp_ctx);
 	cairo_surface_destroy(comp);
-//	cairo_debug_reset_static_data();
 
 	return 0;
 }

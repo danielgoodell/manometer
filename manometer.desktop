@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=Manometer Autostart
+Name=10x10Manometer Autostart
 Comment=Start the Manometer	
-Exec=lxterminal -e "/home/pi/manometer/manometer.sh" 
+Exec=lxterminal --geometry=140x40 -e "/home/pi/10x10manometer/manometer.sh" 
 Terminal=false
-Icon=/home/pi/manometer/manometer.svg
-Name[en_US]=8x6 Manometer
-Path=/home/pi/manometer
+Icon=/home/pi/10x10manometer/manometer.svg
+Name[en_US]=10x10 Manometer
+Path=/home/pi/10x10manometer/

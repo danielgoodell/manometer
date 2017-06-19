@@ -9,11 +9,14 @@
 #include <pthread.h>
 #include <time.h>
 #include <sys/socket.h>
+#include <termios.h>
 
 void * scanivalve(void *);
 
 void printdatarecord(void);
 
 void copypress(void);
+
+int set_interface_attribs(int fd, int speed);
 
 #endif
