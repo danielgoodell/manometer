@@ -114,7 +114,33 @@ int load_image(void)
 	}
 	return 0;
 }
+//Draw the box for the bootup screen.
+void draw_boot(cairo_t* ctx, int w, int h)
+{
+	cairo_push_group(ctx);
+	cairo_set_source_rgb(ctx, 0, 0, 0);
+	cairo_rectangle(ctx, 0.1*w, h*0.35, 0.8*w, 0.3*h);
+	cairo_fill(ctx);
+	cairo_set_source_rgb(ctx, 1, 1, 1);
+	cairo_rectangle(ctx, 0.1*w, h*0.35, 0.8*w, 0.3*h);
+	cairo_stroke(ctx);
 
+	cairo_set_source_rgb(ctx, 1, 1, 1);
+	cairo_text_extents_t te;
+	cairo_select_font_face(ctx, FONT_FACE, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+	cairo_set_font_size(ctx, w * 0.03);
+	cairo_text_extents(ctx, "Waiting for Scanivalve to boot", &te);
+	cairo_move_to(ctx, w * 0.5 - te.width / 2 - te.x_bearing, h * (0.4) + te.height);
+	cairo_show_text(ctx, "Waiting for Scanivalve to boot");
+
+	cairo_set_font_size(ctx, w * 0.02);
+	cairo_text_extents(ctx, "The Scanivalve pressure scanner takes up to 2 minutes to boot.", &te);
+	cairo_move_to(ctx, w * 0.5 - te.width / 2 - te.x_bearing, h * (0.55) + te.height);
+	cairo_show_text(ctx, "The Scanivalve pressure scanner takes up to 2 minutes to boot.");
+
+	cairo_pop_group_to_source(ctx);
+	cairo_paint(ctx);
+}
 //Draw the static screen items
 
 void draw_statics(cairo_t* ctx, int w, int h)
