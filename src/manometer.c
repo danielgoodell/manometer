@@ -25,6 +25,7 @@
  * the right button.
  */
 int _fCloseThreads = 1;
+int _startup = 1;
 
 int cairo_check_event(cairo_surface_t* sfc, int block)
 {
@@ -106,6 +107,9 @@ int main(int argc, char** argv)
 
 		if (help) { //if h has been pressed, then display the help screen until h is pressed again
 			;
+		}
+		if(_startup){
+			draw_boot(comp_ctx, x, y);
 		}
 
 		cairo_set_source_surface(screen_ctx, comp, 0, 0); // Copy the compositing surface to the screen surface.

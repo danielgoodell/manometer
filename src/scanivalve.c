@@ -18,6 +18,7 @@
 extern float comp_pres[25]; //compressor section pressures.
 extern float sect_pres[39]; //test section pressures.
 extern float ref_press;
+extern int _startup;
 
 #define MESSAGE_SIZE 2200
 
@@ -275,6 +276,7 @@ void* scanivalve(void* arg)
 	}
 
 	printf("Succesfully connected to the Scanivalve pressure scanner. Receiving data.\n");
+	_startup = 0; // close 
 
 	//Receive a reply from the server
 	char* server_reply_p;
