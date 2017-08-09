@@ -143,7 +143,7 @@ int set_interface_attribs(int fd, int speed)
 	tty.c_cflag |= CS7;		/* 7-bit characters */
 	tty.c_cflag |= PARENB;  /* parity bit */
 	tty.c_cflag &= ~CSTOPB; /* only need 1 stop bit */
-	//   tty.c_cflag &= ~CRTSCTS;    /* no hardware flowcontrol */
+	tty.c_cflag &= ~(020000000000); //CRTSCTS;    /* no hardware flowcontrol */
 
 	/* set up for non-canonical mode */
 	tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
